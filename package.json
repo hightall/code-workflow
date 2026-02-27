@@ -4,11 +4,12 @@
   "description": "Multi-agent workflow orchestration engine",
   "type": "module",
   "bin": {
-    "cw": "dist/cli.js"
+    "cw": "bin/cw.sh"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "yaml": "^2.7.0"
