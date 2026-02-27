@@ -1,0 +1,114 @@
+id: feature-dev
+name: Feature Development Workflow
+
+agents:
+  - id: planner
+    name: Planner
+    executor: openclaw
+    role: Analyze requirements and decompose into user stories
+    identity: agents/planner/IDENTITY.md
+    agents_md: agents/planner/AGENTS.md
+
+  - id: developer
+    name: Developer
+    executor: cursor
+    role: Implement code changes based on user stories
+    identity: agents/developer/IDENTITY.md
+    agents_md: agents/developer/AGENTS.md
+
+  - id: tester
+    name: Tester
+    executor: cursor
+    role: Write and run tests to verify implementation
+    identity: agents/tester/IDENTITY.md
+    agents_md: agents/tester/AGENTS.md
+
+  - id: acceptor
+    name: Acceptor
+    executor: manual
+    role: Human review gate for acceptance testing
+
+  - id: reviewer
+    name: Reviewer
+    executor: openclaw
+    role: Perform code review and suggest improvements
+    identity: agents/reviewer/IDENTITY.md
+    agents_md: agents/reviewer/AGENTS.md
+
+steps:
+  - id: plan
+    agent: planner
+    type: generate
+    approval: true
+    input: |
+      Analyze the following task and decompose it into implementable user stories.
+
+      Task: {{task}}
+      Project directory: {{project_dir}}
+
+      Output your analysis in this format:
+      PLAN: <one-line summary>
+      STORIES_JSON: [{"title": "...", "description": "..."}]
+
+  - id: develop
+    agent: developer
+    type: generate
+    loop:
+      over: stories
+      as: story
+      verify_each: false
+    maxRetries: 1
+    input: |
+      Implement the following user story in the project.
+
+      Story:
+      {{story}}
+
+      Context from planning:
+      {{plan_output}}
+
+      Project directory: {{project_dir}}
+
+      After making changes, output:
+      CHANGES: <summary of files changed>
+
+  - id: test
+    agent: tester
+    type: verify
+    maxRetries: 1
+    input: |
+      Run tests and verify the implementation is correct.
+
+      Original task: {{task}}
+      Plan: {{plan_output}}
+      Changes made: {{develop_output}}
+      Project directory: {{project_dir}}
+
+      Output:
+      TEST_RESULT: pass or fail
+      TEST_DETAILS: <summary>
+
+  - id: accept
+    agent: acceptor
+    type: review
+    approval: true
+    input: |
+      Please review the implementation:
+      Task: {{task}}
+      Test results: {{test_output}}
+
+  - id: review
+    agent: reviewer
+    type: review
+    input: |
+      Review the code changes for quality, correctness, and best practices.
+
+      Original task: {{task}}
+      Plan: {{plan_output}}
+      Changes: {{develop_output}}
+      Test results: {{test_output}}
+      Project directory: {{project_dir}}
+
+      Output:
+      REVIEW_RESULT: approved or changes_requested
+      REVIEW_COMMENTS: <detailed review>

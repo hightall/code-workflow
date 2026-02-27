@@ -1,0 +1,27 @@
+id: test-manual
+name: Manual Test Workflow
+
+agents:
+  - id: human1
+    name: First Reviewer
+    executor: manual
+    role: First human review gate
+
+  - id: human2
+    name: Second Reviewer
+    executor: manual
+    role: Second human review gate
+
+steps:
+  - id: step1
+    agent: human1
+    approval: true
+    input: |
+      Please review the task: {{task}}
+
+  - id: step2
+    agent: human2
+    approval: true
+    input: |
+      Please do final review: {{task}}
+      Previous step output: {{step1_output}}

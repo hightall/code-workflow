@@ -1,0 +1,20 @@
+{
+  "name": "code-workflow",
+  "version": "0.1.0",
+  "description": "Multi-agent workflow orchestration engine",
+  "type": "module",
+  "bin": {
+    "cw": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
