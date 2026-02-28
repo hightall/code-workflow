@@ -129,6 +129,13 @@ switch (command) {
     break;
   }
 
+  case "dashboard":
+  case "ui": {
+    const { startDashboard } = await import("./tui/dashboard.js");
+    startDashboard();
+    break;
+  }
+
   case "help":
   case "--help":
   case "-h":
@@ -268,5 +275,6 @@ ${c.bold}Usage:${c.reset}
   cw stories <run-id>                View stories for a run
   cw resume <run-id>                 Resume a failed run
   cw stop <run-id>                   Cancel a running run
+  cw dashboard | ui                  Interactive TUI dashboard
 `);
 }
